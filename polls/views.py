@@ -11,17 +11,35 @@ from .models import Choice, Question
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = "latest_question_list"
+    http_web_page_title = "Home Page"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.http_web_page_title
+        return context
+    
     def get_queryset(self):
         return Question.objects.order_by("-pub_date")[:5]
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
+    http_web_page_title = "Question details"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.http_web_page_title
+        return context
 
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
+    http_web_page_title = "Results Page"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.http_web_page_title
+        return context
 
 def vote(request, question_id):
     # Get the question object. If Question object does not exist raise 'ErrorType: Http404'
