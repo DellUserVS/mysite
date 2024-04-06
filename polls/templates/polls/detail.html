@@ -25,8 +25,14 @@
                     {% if error_message %}
                         <p><strong>{{ error_message }}</strong></p>
                     {% endif %}
-                    <input type="radio" name="choice" id="choice{{ forloop.counter }}" />
-                    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+                    <input 
+                        type="radio"
+                        name="choice" 
+                        id="choice{{ forloop.counter }}" 
+                        value="{{ choice.id }}" 
+                    /><label 
+                        for="choice{{ forloop.counter }}"
+                    >{{ choice.choice_text }}</label><br>
                 {% endfor %}
             </fieldset>
             <input type="submit" value="Vote" />
