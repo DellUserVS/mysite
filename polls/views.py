@@ -2,45 +2,26 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.views import generic
 
 from .models import Choice, Question
 
-def index(request):
-    # Filter and return first 5 latest Questions
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
+# using <django.views.generic> for [IndexView, DetailView, ResultsView] for 'shortcut'
 
-    # Context of 'polls/index.html'
-    context = {
-        "title": "Home page",
-        "latest_question_list": latest_question_list
-    }
-    return render(request, 'polls/index.html', context)
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = "latest_question_list"
 
-def detail(request, question_id):
-    # Raise 'ErrorType: Http404' if object does not exist
-    question = get_object_or_404(Question, pk=question_id)
-    
-    title = "Question %s details" % question_id
+    def get_queryset(self):
+        return Question.objects.order_by("-pub_date")[:5]
 
-    # Context of 'polls/detail.html'
-    context = {
-        "title": title,
-        "question": question
-    }
-    
-    return render(request, 'polls/detail.html', context)
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polls/detail.html'
 
-def results(request, question_id):
-    response = "You're looking at the results of question %s"
-    question = get_object_or_404(Question, pk=question_id)
-
-    # Context of 'polls/results.html'
-    context = {
-        "title": "Results of question %s" % question_id,
-        "question": question
-    }
-    
-    return render(request, "polls/results.html", context)
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
 
 def vote(request, question_id):
     # Get the question object. If Question object does not exist raise 'ErrorType: Http404'
